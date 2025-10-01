@@ -25,3 +25,25 @@ class UsuarioCrear(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'success': True, 'details': 'Usuario creado exitosamente.', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+
+class UsuarioActualizar(generics.UpdateAPIView):
+    queryset = usuarios.objects.all()
+    serializer_class = UsuarioSerializer
+    lookup_field = 'id_usuarios'
+
+    def put(self, request, id_usuarios):
+        usuario = get_object_or_404(usuarios, id_usuarios=id_usuarios)
+        serializer = UsuarioSerializer(usuario, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'success': True, 'details': 'Usuario actualizado exitosamente.', 'data': serializer.data}, status=status.HTTP_200_OK)
+    
+class UsuarioEliminar(generics.DestroyAPIView):
+    queryset = usuarios.objects.all()
+    serializer_class = UsuarioSerializer
+    lookup_field = 'id_usuarios'
+
+    def delete(self, request, id_usuarios):
+        usuario = get_object_or_404(usuarios, id_usuarios=id_usuarios)
+        usuario.delete()
+        return Response({'success': True, 'details': 'Usuario eliminado exitosamente.'}, status=status.HTTP_204_NO_CONTENT)
