@@ -12,38 +12,38 @@ class EspecialidadSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PacienteSerializer(serializers.ModelSerializer):
-    id_usuario = UsuarioSerializer()
+    id_usuario = serializers.PrimaryKeyRelatedField(queryset=usuarios.objects.all())
     
     class Meta:
         model = pacientes
         fields = '__all__'
 
 class DoctorSerializer(serializers.ModelSerializer):
-    id_usuario = UsuarioSerializer()
-    id_especialidad = EspecialidadSerializer()
+    id_usuario = serializers.PrimaryKeyRelatedField(queryset=usuarios.objects.all())
+    id_especialidad = serializers.PrimaryKeyRelatedField(queryset=especialidades.objects.all())
     
     class Meta:
         model = doctores
         fields = '__all__'
 
 class AdministradorSerializer(serializers.ModelSerializer):
-    id_usuario = UsuarioSerializer()
+    id_usuario = serializers.PrimaryKeyRelatedField(queryset=usuarios.objects.all())
     
     class Meta:
         model = administradores
         fields = '__all__'
 
 class CitaSerializer(serializers.ModelSerializer):
-    id_paciente = PacienteSerializer()
-    id_doctor = DoctorSerializer()
-    creada_por_usuario = UsuarioSerializer()
+    id_paciente = serializers.PrimaryKeyRelatedField(queryset=pacientes.objects.all())
+    id_doctor = serializers.PrimaryKeyRelatedField(queryset=doctores.objects.all())
+    creada_por_usuario = serializers.PrimaryKeyRelatedField(queryset=usuarios.objects.all())
     
     class Meta:
         model = citas
         fields = '__all__'
 
 class HistorialClinicoSerializer(serializers.ModelSerializer):
-    cita_id = CitaSerializer()
+    cita_id = serializers.PrimaryKeyRelatedField(queryset=citas.objects.all())
     
     class Meta:
         model = historial_clinico

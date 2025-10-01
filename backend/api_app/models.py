@@ -32,7 +32,7 @@ class especialidades(models.Model):
 
 class pacientes(models.Model):
     id_pacientes = models.AutoField(primary_key=True, editable=False, db_column='id')
-    id_usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, db_column='id_usuario')
+    id_usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, db_column='usuario_id')
     nombre = models.CharField(max_length=100, db_column='nombre')
     apellido = models.CharField(max_length=100, db_column='apellido')
     fecha_nacimiento = models.DateField(db_column='fecha_nacimiento')

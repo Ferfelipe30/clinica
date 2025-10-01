@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404, render
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
-from .models import usuarios, especialidades
-from .serializers import UsuarioSerializer, EspecialidadSerializer
+from .models import usuarios, especialidades, pacientes
+from .serializers import UsuarioSerializer, EspecialidadSerializer, PacienteSerializer
 
 class UsuarioList(generics.ListCreateAPIView):
     queryset = usuarios.objects.all()
@@ -90,4 +90,47 @@ class EspecialidadEliminar(generics.DestroyAPIView):
         especialidad = get_object_or_404(especialidades, id_especialidades=id_especialidades)
         especialidad.delete()
         return Response({'success': True, 'details': 'Especialidad eliminada exitosamente.'}, status=status.HTTP_204_NO_CONTENT)
+    
+class pacientesList(generics.ListCreateAPIView):
+    queryset = pacientes.objects.all()
+    serializer_class = PacienteSerializer
+
+    def get(self, request):
+        pacientes_list = pacientes.objects.all()
+        serializer = PacienteSerializer(pacientes_list, many=True)
+        if not pacientes_list:
+            raise NotFound('No se encontraron pacientes.')
+        return Response({'success': True, 'details': 'Listado de pacientes.', 'data': serializer.data}, status=status.HTTP_200_OK)
+    
+class PacienteCrear(generics.CreateAPIView):
+    queryset = pacientes.objects.all()
+    serializer_class = PacienteSerializer
+
+    def post(self, request):
+        serializer = PacienteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'success': True, 'details': 'Paciente creado exitosamente.', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+    
+class PacienteActualizar(generics.UpdateAPIView):
+    queryset = pacientes.objects.all()
+    serializer_class = PacienteSerializer
+    lookup_field = 'id_pacientes'
+
+    def put(self, request, id_pacientes):
+        paciente = get_object_or_404(pacientes, id_pacientes=id_pacientes)
+        serializer = PacienteSerializer(paciente, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'success': True, 'details': 'Paciente actualizado exitosamente.', 'data': serializer.data}, status=status.HTTP_200_OK)
+    
+class PacienteEliminar(generics.DestroyAPIView):
+    queryset = pacientes.objects.all()
+    serializer_class = PacienteSerializer
+    lookup_field = 'id_pacientes'
+
+    def delete(self, request, id_pacientes):
+        paciente = get_object_or_404(pacientes, id_pacientes=id_pacientes)
+        paciente.delete()
+        return Response({'success': True, 'details': 'Paciente eliminado exitosamente.'}, status=status.HTTP_204_NO_CONTENT)
     
