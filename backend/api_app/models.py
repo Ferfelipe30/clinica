@@ -32,7 +32,7 @@ class especialidades(models.Model):
 
 class pacientes(models.Model):
     id_pacientes = models.AutoField(primary_key=True, editable=False, db_column='id')
-    id_usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, db_column='id_usuario')
+    id_usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, db_column='usuario_id')
     nombre = models.CharField(max_length=100, db_column='nombre')
     apellido = models.CharField(max_length=100, db_column='apellido')
     fecha_nacimiento = models.DateField(db_column='fecha_nacimiento')
@@ -50,8 +50,8 @@ class pacientes(models.Model):
 
 class doctores(models.Model):
     id_doctores = models.AutoField(primary_key=True, editable=False, db_column='id')
-    id_usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, db_column='id_usuario')
-    id_especialidad = models.ForeignKey(especialidades, on_delete=models.CASCADE, db_column='id_especialidad')
+    id_usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, db_column='usuario_id')
+    id_especialidad = models.ForeignKey(especialidades, on_delete=models.CASCADE, db_column='especialidad_id')
     nombre = models.CharField(max_length=100, db_column='nombre')
     apellido = models.CharField(max_length=100, db_column='apellido')
     numero_licencia = models.CharField(max_length=50, unique=True, db_column='numero_licencia')
@@ -66,7 +66,7 @@ class doctores(models.Model):
 
 class administradores(models.Model):
     id_administradores = models.AutoField(primary_key=True, editable=False, db_column='id')
-    id_usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, db_column='id_usuario')
+    id_usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, db_column='usuario_id')
     nombre = models.CharField(max_length=100, db_column='nombre')
     apellido = models.CharField(max_length=100, db_column='apellido')
     puesto = models.CharField(max_length=100, db_column='puesto')
@@ -80,13 +80,21 @@ class administradores(models.Model):
         verbose_name_plural = 'Administradores'
 
 class citas(models.Model):
+    ESTADO_CHOICES = [
+        ('programada', 'Programada'),
+        ('confirmada', 'Confirmada'),
+        ('cancelada', 'Cancelada'),
+        ('completada', 'Completada'),
+        ('activa', 'Activa'),
+    ]
+
     id_citas = models.AutoField(primary_key=True, editable=False, db_column='id')
-    id_paciente = models.ForeignKey(pacientes, on_delete=models.CASCADE, db_column='id_paciente')
-    id_doctor = models.ForeignKey(doctores, on_delete=models.CASCADE, db_column='id_doctor')
+    id_paciente = models.ForeignKey(pacientes, on_delete=models.CASCADE, db_column='paciente_id')
+    id_doctor = models.ForeignKey(doctores, on_delete=models.CASCADE, db_column='doctor_id')
     fecha_hora = models.DateTimeField(db_column='fecha_hora')
     motivo = models.TextField(db_column='motivo')
-    estado = models.CharField(max_length=20, db_column='estado')
-    creada_por_usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, db_column='creada_por', related_name='creada_por_usuario_id')
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, db_column='estado')
+    creada_por_usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE, db_column='creada_por_usuario_id')
 
     def __str__(self):
         return f"Cita {self.id_citas} - {self.fecha_hora} - {self.estado} - {self.creada_por_usuario}"
