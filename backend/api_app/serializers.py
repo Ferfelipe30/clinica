@@ -56,3 +56,22 @@ class HistorialClinicoSerializer(serializers.ModelSerializer):
     class Meta:
         model = historial_clinico
         fields = '__all__'
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        try:
+            user = usuarios.objects.get(email=attrs['email'])
+            if not user.check_password(attrs['password']):
+                raise serializers.ValidationError('Invalid credentials')
+            return {
+                'id_usuarios': user.id_usuarios,
+                'nombre': user.nombre,
+                'email': user.email,
+                'rol': user.rol
+            }
+        except usuarios.DoesNotExist:
+            raise serializers.ValidationError('Invalid credentials')
+        return attrs

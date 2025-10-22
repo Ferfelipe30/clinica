@@ -3,7 +3,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from .models import usuarios, especialidades, pacientes, doctores, administradores, citas, historial_clinico
-from .serializers import UsuarioSerializer, EspecialidadSerializer, PacienteSerializer, DoctorSerializer, AdministradorSerializer, CitaSerializer, HistorialClinicoSerializer
+from .serializers import LoginSerializer, UsuarioSerializer, EspecialidadSerializer, PacienteSerializer, DoctorSerializer, AdministradorSerializer, CitaSerializer, HistorialClinicoSerializer
 
 class UsuarioList(generics.ListCreateAPIView):
     queryset = usuarios.objects.all()
@@ -305,3 +305,11 @@ class HistorialClinicoEliminar(generics.DestroyAPIView):
         historial = get_object_or_404(historial_clinico, id_historial_clinico=id_historial_clinico)
         historial.delete()
         return Response({'success': True, 'details': 'Historial clínico eliminado exitosamente.'}, status=status.HTTP_204_NO_CONTENT)
+    
+class LoginView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({'success': True, 'details': 'Login exitoso.', 'data': serializer.validated_data}, status=status.HTTP_200_OK)

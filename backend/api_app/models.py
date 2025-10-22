@@ -9,6 +9,9 @@ class usuarios(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion')
     fecha_actualizacion = models.DateTimeField(auto_now=True, db_column='fecha_actualizacion')
 
+    def check_password(self, raw_password):
+        return self.password == raw_password
+
     def __str__(self):
         return f"{self.nombre} {self.email}"
     

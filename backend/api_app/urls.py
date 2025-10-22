@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    UsuarioList, UsuarioCrear, UsuarioActualizar, UsuarioEliminar,
+    LoginView, UsuarioList, UsuarioCrear, UsuarioActualizar, UsuarioEliminar,
     EspecialidadList, EspecialidadCrear, EspecialidadActualizar, EspecialidadEliminar,
     pacientesList, PacienteCrear, PacienteActualizar, PacienteEliminar,
     DoctorList, DoctorCrear, DoctorActualizar, DoctorEliminar,
@@ -51,4 +51,6 @@ urlpatterns = [
     path('historial_clinico/crear/', HistorialClinicoCrear.as_view(), name='historial-clinico-crear'),
     path('historial_clinico/actualizar/<int:id_historial_clinico>/', HistorialClinicoActualizar.as_view(), name='historial-clinico-actualizar'),
     path('historial_clinico/eliminar/<int:id_historial_clinico>/', HistorialClinicoEliminar.as_view(), name='historial-clinico-eliminar'),
+
+    path('login/', LoginView.as_view(), name='login'),
 ]
