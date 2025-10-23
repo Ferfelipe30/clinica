@@ -149,7 +149,7 @@ export const useUsuarios = () => {
         usuario,
         loading,
         error,
-        fetchUsuarios,
+        refresh: fetchUsuarios,
         fetchUsuariosById,
         addUsuario,
         modifyUsuario,
