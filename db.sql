@@ -1,3 +1,7 @@
+
+
+
+
 -- Tabla central para la autenticación y roles de todos los usuarios del sistema.
 -- NOTA: Se usa SERIAL en lugar de AUTO_INCREMENT para compatibilidad con PostgreSQL.
 CREATE TABLE usuarios (
@@ -77,3 +81,22 @@ CREATE TABLE historial_clinico (
     fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (cita_id) REFERENCES citas(id) ON DELETE CASCADE
 );
+
+DROP TABLE usuarios;
+ALTER TABLE pacientes RENAME COLUMN id_usuario_id TO id_usuario;
+
+-- Para doctores
+ALTER TABLE doctores ADD COLUMN id_usuario integer;
+ALTER TABLE doctores ADD CONSTRAINT doctores_id_usuario_fk 
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE;
+
+-- Para administradores  
+ALTER TABLE administradores ADD COLUMN id_usuario integer;
+ALTER TABLE administradores ADD CONSTRAINT administradores_id_usuario_fk 
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE;
+
+ALTER TABLE citas DROP CONSTRAINT citas_estado_check;
+ALTER TABLE citas ADD CONSTRAINT citas_estado_check 
+CHECK (estado IN ('programada', 'confirmada', 'cancelada', 'completada', 'pendiente'));
+
+Select * From Citas;
