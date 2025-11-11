@@ -127,7 +127,7 @@ const UsuarioModal: React.FC<UsuarioModalProps> = ({ open, initialData, onClose,
                 {error && <Alert severity='error' sx={{ mb: 2 }}>{error}</Alert>}
                 {success && <Alert severity='success' sx={{ mb: 2 }}>{success}</Alert>}
                 <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
-                    <TextField 
+                    <TextField
                         label="Nombre"
                         name="nombre"
                         value={formData.nombre}
@@ -171,13 +171,12 @@ const UsuarioModal: React.FC<UsuarioModalProps> = ({ open, initialData, onClose,
                             Cancelar
                         </Button>
                         <Button variant="contained" color="primary" type="submit" disabled={loading}>
-                            {loading 
+                            {loading
                                 ? initialData ? 'Actualizando...': 'Creando...'
                                 : initialData ? 'Actualizar' : 'Crear'
                             }
                         </Button>
                     </DialogActions>
-
                 </Box>
             </DialogContent>
         </Dialog>

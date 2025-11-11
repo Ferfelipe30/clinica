@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
-import { Box, AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Collapse, List, ListItemButton } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
@@ -13,13 +13,28 @@ import HistoryIcon from '@mui/icons-material/History';
 import LoginIcon from '@mui/icons-material/Login';
 import HomeScreen from "./HomeScreen";
 import UsuarioScreens from "../commons/usuario/screens/usuarioScreens";
+import LoginScreen from "../commons/login/screens/loginScreens";
 import logo from '../assets/logo.webp';
+import AvatarInitial from "../commons/login/components/AvatarInitial";
 
 const AppLayout: React.FC = () => {
     const navigate = useNavigate();
     const [anchorElMobile, setAnchorElMobile] = React.useState<null | HTMLElement>(null);
     const [anchorElGestion, setAnchorElGestion] = React.useState<null | HTMLElement>(null);
+    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const [user, setUser] = React.useState<{ name?: string; username?: string; email?: string } | null>(null);
     
+    React.useEffect(() => {
+        const raw = localStorage.getItem('clinica_user');
+        if (raw) {
+            try {
+                setUser(JSON.parse(raw));
+            } catch {
+                setUser(null);
+            }
+        }
+    }, []);
+
     const openMobileMenu = Boolean(anchorElMobile);
     const openGestionMenu = Boolean(anchorElGestion);
 
@@ -41,6 +56,18 @@ const AppLayout: React.FC = () => {
 
     const handleLogin = () => {
         navigate('/login');
+    };
+
+    const handleUserMenuOpen = (e: React.MouseEvent<HTMLElement>) => {
+        setAnchorElUser(e.currentTarget);
+    };
+    const handleUserMenuClose = () => setAnchorElUser(null);
+
+    const handleLogout = () => {
+        localStorage.removeItem('clinica_user');
+        setUser(null);
+        handleUserMenuClose();
+        navigate('/');
     };
 
     return (
@@ -109,14 +136,34 @@ const AppLayout: React.FC = () => {
                     </Box>
 
                     {/* Botón de inicio de sesión */}
-                    <Button
-                        color="inherit"
-                        onClick={handleLogin}
-                        startIcon={<LoginIcon />}
-                        sx={{ ml: 2 }}
-                    >
-                        Iniciar Sesión
-                    </Button>
+                    {user ? (
+                        <>
+                            <Tooltip title={user.name || user.username || user.email || 'Usuario'}>
+                                <IconButton color="inherit" onClick={handleUserMenuOpen} sx={{ ml: 2 }}>
+                                    <AvatarInitial name={user.name || user.username || user.email} size={36} />
+                                </IconButton>
+                            </Tooltip>
+                            <Menu
+                                anchorEl={anchorElUser}
+                                open={Boolean(anchorElUser)}
+                                onClose={handleUserMenuClose}
+                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                            >
+                                <MenuItem onClick={() => { handleUserMenuClose(); navigate('/perfil'); }}>Perfil</MenuItem>
+                                <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+                            </Menu>
+                        </>
+                    ) : (
+                        <Button
+                            color="inherit"
+                            onClick={handleLogin}
+                            startIcon={<LoginIcon />}
+                            sx={{ ml: 2 }}
+                        >
+                            Iniciar Sesión
+                        </Button>
+                    )}
 
                     {/* Menú Mobile (hamburguesa) */}
                     <Box sx={{ display: { xs: 'flex', md: 'none' }, ml: 'auto' }}>
@@ -177,6 +224,7 @@ const AppLayout: React.FC = () => {
                     <Route path="/usuarios" element={<UsuarioScreens />} />
                     <Route path="/citas" element={<Box sx={{ p: 3 }}><Typography variant="h5">Citas (pendiente)</Typography></Box>} />
                     <Route path="/historial" element={<Box sx={{ p: 3 }}><Typography variant="h5">Historial Clínico (pendiente)</Typography></Box>} />
+                    <Route path="/login" element={<LoginScreen />} />
                 </Routes>
             </Box>
         </Box>
