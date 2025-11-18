@@ -1,11 +1,16 @@
 from django.db import models
 
 class usuarios(models.Model):
+    ROL_CHOICES = [
+        ('paciente', 'Paciente'),
+        ('doctor', 'Doctor'),
+        ('administrador', 'Administrador'),
+    ]
     id_usuarios = models.AutoField(primary_key=True, editable=False, db_column='id')
     nombre = models.CharField(max_length=50, db_column='nombre_usuario')
     password = models.CharField(max_length=50, db_column='hash_contrasena')
     email = models.EmailField(unique=True, db_column='email')
-    rol = models.CharField(max_length=20, db_column='rol')
+    rol = models.CharField(max_length=20, choices=ROL_CHOICES, default='paciente', db_column='rol')
     fecha_creacion = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion')
     fecha_actualizacion = models.DateTimeField(auto_now=True, db_column='fecha_actualizacion')
 

@@ -5,6 +5,14 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = usuarios
         fields = '__all__'
+        extra_kwargs = {
+            "rol": {"required": False}
+        }
+    
+    def create(self, validated_data):
+        if 'rol' not in validated_data:
+            validated_data['rol'] = 'paciente'
+        return super().create(validated_data)
 
 class EspecialidadSerializer(serializers.ModelSerializer):
     class Meta:
