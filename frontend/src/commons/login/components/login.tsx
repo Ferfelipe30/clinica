@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import type { Login } from '../types/types';
 import {loginUser} from '../services/services';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginModalProps {
     open: boolean;
@@ -44,6 +45,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, initialData, onClose, onS
     
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -109,7 +111,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, initialData, onClose, onS
                 </Box>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} disabled={loading}>Cancelar</Button>
+                <Button onClick={() => navigate('/usuarios/crear')} disabled={loading}>crear cuenta</Button>
+                <Button onClick={() => {onClose(); navigate('/');}} disabled={loading}>Cancelar</Button>
                 <Button onClick={handleSubmit} variant="contained" disabled={loading}>
                     {loading
                         ? 'Iniciando...'

@@ -14,6 +14,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import HomeScreen from "./HomeScreen";
 import UsuarioScreens from "../commons/usuario/screens/usuarioScreens";
 import LoginScreen from "../commons/login/screens/loginScreens";
+import CreateUsuario from "../commons/usuario/components/CreateUsuario";
 import logo from '../assets/logo.webp';
 import AvatarInitial from "../commons/login/components/AvatarInitial";
 
@@ -225,6 +226,16 @@ const AppLayout: React.FC = () => {
                     <Route path="/citas" element={<Box sx={{ p: 3 }}><Typography variant="h5">Citas (pendiente)</Typography></Box>} />
                     <Route path="/historial" element={<Box sx={{ p: 3 }}><Typography variant="h5">Historial Clínico (pendiente)</Typography></Box>} />
                     <Route path="/login" element={<LoginScreen />} />
+                    <Route
+                        path="/usuarios/crear"
+                        element={
+                            <CreateUsuario
+                                open={true}
+                                onClose={() => { navigate('/usuarios'); }}
+                                onSuccess={() => { navigate('/usuarios'); }}
+                            />
+                        }
+                    />
                 </Routes>
             </Box>
         </Box>
